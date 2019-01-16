@@ -11,7 +11,7 @@ GAME RULES:
 
 
 var scores, roundScore, activePlayer, previousDice, diceDOM, winningScore;
-diceDOM = [document.querySelector('.dice-0'), document.querySelector('.dice-1')];
+diceDOM = [document.getElementById('dice-0'), document.getElementById('dice-1')];
 
 init();
 hideButtons();
