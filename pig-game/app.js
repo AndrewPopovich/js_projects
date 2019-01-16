@@ -11,7 +11,7 @@ GAME RULES:
 
 
 var scores, roundScore, activePlayer, previousDice, diceDOM, winningScore;
-diceDOM = document.querySelector('.dice');
+diceDOM = [document.querySelector('.dice-0'), document.querySelector('.dice-1')];
 
 init();
 hideButtons();
@@ -19,18 +19,24 @@ hideButtons();
 scoreActiveDOM = document.getElementById('score-' + activePlayer);
 
 document.querySelector('.btn-roll').addEventListener('click', function () {
-    var dice = Math.floor(Math.random() * 6) + 1;
-
-    diceDOM.src = 'dice-' + dice + '.png';
-    diceDOM.style.display = 'block';
-    roundScore += dice;
-    
-    if (dice === 1 || dice === previousDice) {
-        changeActivePlayer();
-    }
-    previousDice = dice;
+    // previousDice = dice;
+    generateDice();
     document.querySelector('#current-' + activePlayer).textContent = roundScore;
 });
+
+function generateDice() {
+    showDice();
+    for (let i = 0; i < diceDOM.length; i++) {
+
+        var dice = Math.floor(Math.random() * 6) + 1;
+        diceDOM[i].src = 'dice-' + dice + '.png';
+        roundScore += dice;
+        if (dice === 1/* || dice === previousDice*/) {
+            changeActivePlayer();
+        }
+    }
+
+}
 
 document.querySelector('.btn-hold').addEventListener('click', function() {
     scores[activePlayer] += roundScore;
@@ -39,7 +45,7 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
 
     if (scores[activePlayer] >= winningScore) {
         document.getElementById('name-' + activePlayer).textContent = 'WINNER';
-        diceDOM.style.display= 'none';
+        hideDice();
         document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
         hideButtons();
@@ -80,7 +86,7 @@ function init() {
     document.getElementById('score-0').textContent = 0;
     document.getElementById('score-1').textContent = 0;
     winningScore = document.getElementById('winning-score').value;
-    diceDOM.style.display = 'none';
+    hideDice();
 }
 
 function changeActivePlayer() {
@@ -90,7 +96,19 @@ function changeActivePlayer() {
     document.getElementById('current-1').textContent = 0;
     roundScore = 0;
     activePlayer = activePlayer === 1 ? 0 : 1;
-    diceDOM.style.display = 'none';
+    hideDice();
+}
+
+function hideDice() {
+    for (let i = 0; i < diceDOM.length; i++) {
+        diceDOM[i].style.display = 'none';
+    }
+}
+
+function showDice() {
+    for (let i = 0; i < diceDOM.length; i++) {
+        diceDOM[i].style.display = 'block';
+    }
 }
 
 function hideButtons() {
