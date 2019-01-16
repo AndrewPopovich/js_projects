@@ -126,6 +126,19 @@ button:focus {
     outline: none;
 }
 
+input {
+    position: absolute;
+    width: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #555;
+    font-family: Lato;
+    font-size: 20px;
+    cursor: pointer;
+    font-weight: 300;
+    transition: background-color 0.3s, color 0.3s;
+}
+
 i {
     color: #EB4D4D;
     display: inline-block;
@@ -152,3 +165,7 @@ i {
 
 .winner { background-color: #f7f7f7; }
 .winner .player-name { font-weight: 300; color: #EB4D4D; }
+
+.input-score {
+    top: 10px;
+}

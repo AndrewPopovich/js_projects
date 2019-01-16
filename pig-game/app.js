@@ -10,10 +10,11 @@ GAME RULES:
 */
 
 
-var scores, roundScore, activePlayer, previousDice, diceDOM;
+var scores, roundScore, activePlayer, previousDice, diceDOM, winningScore;
 diceDOM = document.querySelector('.dice');
 
 init();
+hideButtons();
 
 scoreActiveDOM = document.getElementById('score-' + activePlayer);
 
@@ -36,13 +37,14 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
     document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
     document.querySelector('#current-' + activePlayer).textContent = 0;
 
-    if (scores[activePlayer] >= 100) {
+    if (scores[activePlayer] >= winningScore) {
         document.getElementById('name-' + activePlayer).textContent = 'WINNER';
         diceDOM.style.display= 'none';
         document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
         document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
-        document.querySelector('.btn-roll').style.display = 'none';
-        document.querySelector('.btn-hold').style.display = 'none';
+        hideButtons();
+        document.getElementById('winning-score').value = null;
+        document.getElementById('winning-score').style.display = 'block';
         return;
     }
     changeActivePlayer();
@@ -51,8 +53,6 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
 document.querySelector('.btn-new').addEventListener('click', startNewGame);
 
 function startNewGame() {
-    document.querySelector('.btn-roll').style.display = 'block';
-    document.querySelector('.btn-hold').style.display = 'block';
     document.querySelector('.player-0-panel').classList.remove('active');
     document.querySelector('.player-1-panel').classList.remove('active');
     document.querySelector('.player-0-panel').classList.add('active');
@@ -61,9 +61,17 @@ function startNewGame() {
     document.getElementById('name-0').textContent = 'Player 1';
     document.getElementById('name-1').textContent = 'Player 2';
     init();
+
+    if (winningScore <= 0) {
+        window.alert('Winning score should be more than 0!');
+        return;
+    }
+    document.getElementById('winning-score').style.display = 'none';
+    showButtons();
 }
 
 function init() {
+    hideButtons();
     scores = [0,0];
     activePlayer = 0;
     roundScore = 0;
@@ -71,6 +79,7 @@ function init() {
     document.getElementById('current-1').textContent = 0;
     document.getElementById('score-0').textContent = 0;
     document.getElementById('score-1').textContent = 0;
+    winningScore = document.getElementById('winning-score').value;
     diceDOM.style.display = 'none';
 }
 
@@ -82,6 +91,16 @@ function changeActivePlayer() {
     roundScore = 0;
     activePlayer = activePlayer === 1 ? 0 : 1;
     diceDOM.style.display = 'none';
+}
+
+function hideButtons() {
+    document.querySelector('.btn-roll').style.display = 'none';
+    document.querySelector('.btn-hold').style.display = 'none';
+}
+
+function showButtons() {
+    document.querySelector('.btn-roll').style.display = 'block';
+    document.querySelector('.btn-hold').style.display = 'block';
 }
 
 
