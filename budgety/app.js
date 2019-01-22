@@ -11,10 +11,6 @@ var budgetController = (function() {
         this.value = value;
     };
 
-    var allExpenses = [];
-    var allIncomes = [];
-    var totalExpenses = 0;
-    var totalIncomes = 0;
     var ID = 0;
 
     var data = {
@@ -26,7 +22,28 @@ var budgetController = (function() {
             exp: 0,
             inc: 0
         }
-    }
+    };
+
+    var calculateTotals = function() {
+        data.totals.exp = 0;
+        data.totals.inc = 0;
+
+        data.allItems.exp.forEach(function(val, index, arr) {
+            data.totals.exp += val.value;
+        });
+
+        data.allItems.inc.forEach(function(val, index, arr) {
+            data.totals.inc += val.value;
+        });
+    };
+
+    var calculateBudget = function() {
+        return data.totals.inc - data.totals.exp;
+    };
+
+    var calculateExpPercent = function() {
+        return (data.totals.exp * 100) / data.totals.inc;
+    };
 
     return {
         addItem: function(type, description, value) {
@@ -40,6 +57,21 @@ var budgetController = (function() {
              data.allItems[type].push(newItem);
              ID++;
              return newItem;
+        },
+
+        testing: function() {
+            return data;
+        },
+
+        calculateBudget() {
+            calculateTotals();
+            var budget = calculateBudget();
+            var percentExp = parseInt(calculateExpPercent());
+            return {
+                budget: budget,
+                percentExp: percentExp,
+                totals: data.totals
+            }
         }
     };
 })();
@@ -52,15 +84,32 @@ var UIController = (function()  {
         inputValue: '.add__value',
         addButton: '.add__btn',
         incomeContainer: '.income__list',
-        expenseContainer: '.expenses__list'
+        expenseContainer: '.expenses__list',
+        budgetValue: '.budget__value',
+        incomeBudgetValue: '.budget__income--value',
+        expencesBudgetValue: '.budget__expenses--value',
+        expencesBudgetPercent: '.budget__expenses--percentage'
     };
+
+    (function init() {
+        document.querySelector(DOMStrings.budgetValue).textContent = '0.00';
+        document.querySelector(DOMStrings.incomeBudgetValue).textContent = '0.00';
+        document.querySelector(DOMStrings.expencesBudgetValue).textContent = '0.00';
+        document.querySelector(DOMStrings.expencesBudgetPercent).textContent = '0%';
+    })();
+
+    var getSignWithValue = function(value) {
+        var sign = value > 0 ? '+' : '-';
+        if (value === 0) sign = '';
+        return sign + value;
+    }
 
     return {
         getInputData: function() {
             return {
                 type: document.querySelector(DOMStrings.inputType).value,
                 description: document.querySelector(DOMStrings.inputDescription).value,
-                value: document.querySelector(DOMStrings.inputValue).value
+                value: parseFloat(document.querySelector(DOMStrings.inputValue).value)
             };
         },
 
@@ -98,6 +147,13 @@ var UIController = (function()  {
             } else if (type === 'exp') {
                 document.querySelector(itemContainer).insertAdjacentHTML('beforeend', html);
             }
+        },
+
+        updateBudget: function(budgetData) {
+            document.querySelector(DOMStrings.budgetValue).textContent = getSignWithValue(budgetData.budget);
+            document.querySelector(DOMStrings.incomeBudgetValue).textContent = getSignWithValue(budgetData.totals.inc);
+            document.querySelector(DOMStrings.expencesBudgetValue).textContent = getSignWithValue(budgetData.totals.exp);
+            document.querySelector(DOMStrings.expencesBudgetPercent).textContent = getSignWithValue(budgetData.percentExp) + '%';
         }
     };
 })();
@@ -115,16 +171,30 @@ var appController = (function(budgetCtrl, uiCtrl)  {
         });
     }
 
+    var updateBudget = function() {
+        var budgetData = budgetCtrl.calculateBudget();
+
+        uiCtrl.updateBudget(budgetData);
+
+    }
+
     var ctrlAddItem = function(el) {
         var input, newItem;
 
         input = uiCtrl.getInputData();
+        if (!input.description.trim() || !input.value || input.value <= 0) {
+            return;
+        }
 
         newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
         uiCtrl.addListItem(newItem, input.type);
 
         uiCtrl.clearInputFields();
+
+        updateBudget();
+
+        
     }
 
     return {
