@@ -60,7 +60,6 @@ var budgetController = (function() {
         },
 
         deleteItem: function(type, id) {
-            console.log(type + ' ' + id);
             data.allItems[type] = data.allItems[type].filter(function(e) {
                 return e.id !== id;
             });
@@ -168,7 +167,17 @@ var UIController = (function()  {
             : '0';
             document.querySelector(DOMStrings.expencesBudgetPercent).textContent = budgetData.percentExp > 0 && budgetData.percentExp <= 100
             ? budgetData.percentExp + '%' 
-            : '---';
+            : '---'; 
+        },
+
+        changeTypeEvent: function() {
+            var fields = document.querySelectorAll(DOMStrings.inputType + ', ' + DOMStrings.inputDescription + ', ' + DOMStrings.inputValue);
+
+            fields.forEach(function(val, key, parent) {
+                val.classList.toggle('red-focus');
+            });
+
+            document.querySelector(DOMStrings.addButton).classList.toggle('red');
         }
     };
 })();
@@ -199,6 +208,8 @@ var appController = (function(budgetCtrl, uiCtrl)  {
                 uiCtrl.deleteItem(itemId);
             }
         });
+
+        document.querySelector(DOMStrings.inputType).addEventListener('change', uiCtrl.changeTypeEvent);
     };
 
     var updateBudget = function() {
