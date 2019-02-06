@@ -6,4 +6,6 @@ import Search from './models/Search'
 
 const search = new Search('chicken');
 
-search.getRecipe().then(console.log);
+search.getRecipe().then(el => {
+    console.log(el.recipes[0]);
+});

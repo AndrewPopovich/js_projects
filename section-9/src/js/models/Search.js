@@ -19,5 +19,3 @@ export default class Search {
     }
 
 }
-
-new Search('chicken').getRecipe();
