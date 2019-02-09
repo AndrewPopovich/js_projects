@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Asynchronous JavaScript</title>
+</head>
+<body>
+    <h1>Asynchronous JavaScript</h1>
+    <script>
+        async function getWeather(id) {
+            try {
+                const weather = await fetch(`https://crossorigin.me/https://www.metaweather.com/api/location/${id}/`);
+                
+                const json = await weather.json();
+
+                console.log(`Today in ${json.title} max temperature is`);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        getWeather(123);
+    </script>
+</body>
+</html>
