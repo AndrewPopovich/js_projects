@@ -4,8 +4,12 @@
 
 import Search from './models/Search'
 
+const state = {};
+
 const search = new Search('chicken');
 
 search.getRecipe().then(el => {
     console.log(el.recipes[0]);
 });
+
+console.log('test');
